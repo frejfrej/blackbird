@@ -44,10 +44,10 @@ static json_t* checkResponse(std::ostream &logFile, json_t *root)
 quote_t getQuote(Parameters& params)
 {
   auto &exchange = queryHandle(params);
-  unique_json root { exchange.getRequest("/api/3/ticker/btc_usd") };
+  unique_json root { exchange.getRequest("/api/3/ticker/btc_eur") };
 
-  double bidValue = json_number_value(json_object_get(json_object_get(root.get(), "btc_usd"), "sell"));
-  double askValue = json_number_value(json_object_get(json_object_get(root.get(), "btc_usd"), "buy"));
+  double bidValue = json_number_value(json_object_get(json_object_get(root.get(), "btc_eur"), "sell"));
+  double askValue = json_number_value(json_object_get(json_object_get(root.get(), "btc_eur"), "buy"));
 
   return std::make_pair(bidValue, askValue);
 }
@@ -66,7 +66,7 @@ std::string sendLongOrder(Parameters &params, std::string direction, double quan
                   << std::setprecision(6) << quantity << "@$"
                   << std::setprecision(2) << price << "...\n";
   std::ostringstream options;
-  options << "pair=btc_usd"
+  options << "pair=btc_eur"
           << "&type="   << direction
           << "&amount=" << std::fixed << quantity;
   // BTCe's 'Trade' method requires rate to be limited to 3 decimals
@@ -82,7 +82,7 @@ std::string sendLongOrder(Parameters &params, std::string direction, double quan
 bool isOrderComplete(Parameters& params, std::string orderId)
 {
   if (orderId == "0") return true;
-  unique_json root { authRequest(params, "ActiveOrders", "pair=btc_usd") };
+  unique_json root { authRequest(params, "ActiveOrders", "pair=btc_eur") };
 
   return json_object_get(root.get(), orderId.c_str()) == nullptr;
 }
@@ -98,8 +98,8 @@ double getActivePos(Parameters& params)
 double getLimitPrice(Parameters& params, double volume, bool isBid)
 {
   auto &exchange = queryHandle(params);
-  unique_json root { exchange.getRequest("/api/3/depth/btc_usd") };
-  auto bidask = json_object_get(json_object_get(root.get(), "btc_usd"), isBid ? "bids" : "asks");
+  unique_json root { exchange.getRequest("/api/3/depth/btc_eur") };
+  auto bidask = json_object_get(json_object_get(root.get(), "btc_eur"), isBid ? "bids" : "asks");
   double price = 0.0, sumvol = 0.0;
   for (size_t i = 0, n = json_array_size(bidask); i < n; ++i)
   {

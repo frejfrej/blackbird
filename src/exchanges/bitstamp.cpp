@@ -72,9 +72,9 @@ double getAvail(Parameters& params, std::string currency)
   {
     returnedText = json_string_value(json_object_get(root.get(), "btc_balance"));
   }
-  else if (currency == "usd")
+  else if (currency == "eur")
   {
-    returnedText = json_string_value(json_object_get(root.get(), "usd_balance"));
+    returnedText = json_string_value(json_object_get(root.get(), "eur_balance"));
   }
   if (returnedText != NULL)
   {

@@ -62,9 +62,9 @@ int main(int argc, char** argv) {
   // Does some verifications about the parameters
   if (!params.demoMode) {
     if (!params.useFullExposure) {
-      if (params.testedExposure < 10.0 && params.leg2.compare("USD") == 0) {
+      if (params.testedExposure < 10.0 && params.leg2.compare("EUR") == 0) {
         // TODO do the same check for other currencies. Is there a limi?
-        std::cout << "ERROR: Minimum USD needed: $10.00" << std::endl;
+        std::cout << "ERROR: Minimum EUR needed: $10.00" << std::endl;
         std::cout << "       Otherwise some exchanges will reject the orders\n" << std::endl;
         exit(EXIT_FAILURE);
       }
@@ -84,9 +84,9 @@ int main(int argc, char** argv) {
     exit(EXIT_FAILURE);
   }
 
-  // We only trade BTC/USD for the moment
-  if (params.leg1.compare("BTC") != 0 || params.leg2.compare("USD") != 0) {
-    std::cout << "ERROR: Valid currency pair is only BTC/USD for now.\n" << std::endl;
+  // We only trade BTC/EUR for the moment
+  if (params.leg1.compare("BTC") != 0 || params.leg2.compare("EUR") != 0) {
+    std::cout << "ERROR: Valid currency pair is only BTC/EUR for now.\n" << std::endl;
     exit(EXIT_FAILURE);
   }
 
@@ -284,7 +284,7 @@ int main(int argc, char** argv) {
     logFile << "Demo mode: trades won't be generated\n" << std::endl;
   }
 
-  // Shows which pair we are trading (BTC/USD only for the moment)
+  // Shows which pair we are trading (BTC/EUR only for the moment)
   logFile << "Pair traded: " << params.leg1 << "/" << params.leg2 << "\n" << std::endl;
 
   std::cout << "Log file generated: " << logFileName << "\nBlackbird is running... (pid " << getpid() << ")\n" << std::endl;
@@ -326,7 +326,7 @@ int main(int argc, char** argv) {
                    {
                      Balance tmp {};
                      tmp.leg1 = apply(params, "btc");
-                     tmp.leg2 = apply(params, "usd");
+                     tmp.leg2 = apply(params, "eur");
                      return tmp;
                    } );
 
@@ -633,7 +633,7 @@ int main(int argc, char** argv) {
           shortOrderId = "0";
           inMarket = false;
           for (int i = 0; i < numExch; ++i) {
-            balance[i].leg2After = getAvail[i](params, "usd"); // FIXME: currency hard-coded
+            balance[i].leg2After = getAvail[i](params, "eur"); // FIXME: currency hard-coded
             balance[i].leg1After = getAvail[i](params, "btc"); // FIXME: currency hard-coded
           }
           for (int i = 0; i < numExch; ++i) {

@@ -32,14 +32,14 @@ quote_t getQuote(Parameters &params)
     krakenGotTicker = false;
   } else {
     auto &exchange = queryHandle(params);
-    krakenTicker.reset(exchange.getRequest("/0/public/Ticker?pair=XXBTZUSD"));
+    krakenTicker.reset(exchange.getRequest("/0/public/Ticker?pair=XXBTZEUR"));
     krakenGotTicker = true;
   }
   json_t *root = krakenTicker.get();
-  const char *quote = json_string_value(json_array_get(json_object_get(json_object_get(json_object_get(root, "result"), "XXBTZUSD"), "b"), 0));
+  const char *quote = json_string_value(json_array_get(json_object_get(json_object_get(json_object_get(root, "result"), "XXBTZEUR"), "b"), 0));
   auto bidValue = quote ? std::stod(quote) : 0.0;
 
-  quote = json_string_value(json_array_get(json_object_get(json_object_get(json_object_get(root, "result"), "XXBTZUSD"), "a"), 0));
+  quote = json_string_value(json_array_get(json_object_get(json_object_get(json_object_get(root, "result"), "XXBTZEUR"), "a"), 0));
   auto askValue = quote ? std::stod(quote) : 0.0;
 
   return std::make_pair(bidValue, askValue);
@@ -52,8 +52,8 @@ double getAvail(Parameters& params, std::string currency) {
     return 0.0;
   }
   double available = 0.0;
-  if (currency.compare("usd") == 0) {
-    const char * avail_str = json_string_value(json_object_get(result, "ZUSD"));
+  if (currency.compare("eur") == 0) {
+    const char * avail_str = json_string_value(json_object_get(result, "ZEUR"));
     available = avail_str ? atof(avail_str) : 0.0;
   } else if (currency.compare("btc") == 0) {
     const char * avail_str = json_string_value(json_object_get(result, "XXBT"));
@@ -72,7 +72,7 @@ std::string sendLongOrder(Parameters& params, std::string direction, double quan
   *params.logFile << "<Kraken> Trying to send a \"" << direction << "\" limit order: "
                   << std::setprecision(6) << quantity << " @ $"
                   << std::setprecision(2) << price << "...\n";
-  std::string pair = "XXBTZUSD";
+  std::string pair = "XXBTZEUR";
   std::string type = direction;
   std::string ordertype = "limit";
   std::string pricelimit = std::to_string(price);
@@ -121,11 +121,11 @@ double getLimitPrice(Parameters &params, double volume, bool isBid)
   if (!krakenGotLimPrice)
   {
     auto &exchange = queryHandle(params);
-    krakenLimPrice.reset(exchange.getRequest("/0/public/Depth?pair=XXBTZUSD"));
+    krakenLimPrice.reset(exchange.getRequest("/0/public/Depth?pair=XXBTZEUR"));
   }
   krakenGotLimPrice = !krakenGotLimPrice;
   auto root = krakenLimPrice.get();
-  auto branch = json_object_get(json_object_get(root, "result"), "XXBTZUSD");
+  auto branch = json_object_get(json_object_get(root, "result"), "XXBTZEUR");
   branch = json_object_get(branch, isBid ? "bids" : "asks");
 
   // loop on volume
